@@ -1,0 +1,44 @@
+{% set p_query_time_period = (query_time_period | default(1800)) %}
+{% set p_query_target_qps = (query_target_per_sec | default(50)) %}
+
+{
+  "name": "elasticlogs-querying",
+  "description": "This challenge simulates a set of Kibana queries against historical data ({{p_query_index_pattern}} indices) without any indexing taking place for a period of {{ p_query_time_period / 60 }} minutes. It assumes one of the challenges creating {{p_query_index_pattern}} indices has been run.",
+  "meta": {
+    "benchmark_type": "querying",
+    "target_kibana_queries_per_second": "{{ p_query_target_qps }}",
+    "query_runtime_seconds": "{{ p_query_time_period }}"
+  },
+  "schedule": [
+    {
+      "operation": "fieldstats_elasticlogs_q-*",
+      "iterations": 1,
+      "clients": 4
+    },
+    {
+      "parallel": {
+        "warmup-time-period": 0,
+        "time-period": {{ p_query_time_period }},
+        "clients": 4,
+        "tasks": [
+          {
+            "operation": "relative-kibana-content_issues-dashboard_50%",
+            "target-throughput": {{ (query_target_per_sec * 0.39) | round | int }}
+          },
+          {
+            "operation": "relative-kibana-content_issues-dashboard_75%",
+            "target-throughput": {{ (query_target_per_sec * 0.13) | round | int }}
+          },
+          {
+            "operation": "relative-kibana-traffic-dashboard_50%",
+            "target-throughput": {{ (query_target_per_sec * 0.29) | round | int }}
+          },
+          {
+            "operation": "relative-kibana-discover_50%",
+            "target-throughput": {{ (query_target_per_sec * 0.19) | round | int }}
+          }
+        ]
+      }
+    }
+  ]
+}
