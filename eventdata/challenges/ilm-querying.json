@@ -1,5 +1,5 @@
-{% set p_query_time_period = (query_time_period | default(1800)) %}
-{% set p_query_target_qps = (query_target_per_sec | default(50)) %}
+{% set p_query_time_period = (query_time_period | default(1800) | int) %}
+{% set p_query_target_qps = (query_target_per_sec | default(50.0) | float) %}
 
 {
   "name": "elasticlogs-querying",
@@ -23,19 +23,19 @@
         "tasks": [
           {
             "operation": "relative-kibana-content_issues-dashboard_50%",
-            "target-throughput": {{ (query_target_per_sec * 0.39) | round | int }}
+            "target-throughput": {{ (p_query_target_qps * 0.39) | round | int }}
           },
           {
             "operation": "relative-kibana-content_issues-dashboard_75%",
-            "target-throughput": {{ (query_target_per_sec * 0.13) | round | int }}
+            "target-throughput": {{ (p_query_target_qps * 0.13) | round | int }}
           },
           {
             "operation": "relative-kibana-traffic-dashboard_50%",
-            "target-throughput": {{ (query_target_per_sec * 0.29) | round | int }}
+            "target-throughput": {{ (p_query_target_qps * 0.29) | round | int }}
           },
           {
             "operation": "relative-kibana-discover_50%",
-            "target-throughput": {{ (query_target_per_sec * 0.19) | round | int }}
+            "target-throughput": {{ (p_query_target_qps * 0.19) | round | int }}
           }
         ]
       }

@@ -480,7 +480,7 @@ BUGBUG
           }
         }
       }
-    },
+    }
   }
 },
 {
@@ -496,7 +496,7 @@ BUGBUG
   "operation-type": "bulk",
   "param-source": "elasticlogs_bulk",
   "index": "{{p_query_index_write_alias}}",
-  "bulk-size": {{p_bulk_docs}},
+  "bulk-size": {{p_bulk_size|int}},
   "record_raw_event_size": {{p_record_raw_event_size}}
 },
 {

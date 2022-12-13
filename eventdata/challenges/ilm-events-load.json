@@ -1,9 +1,9 @@
-{% set p_event_count = ( event_count | default(100000000) ) %}
-{% set p_event_mils = ( p_event_count / 1000000 ) | round %}
-{% set p_bulk_indexing_clients = ( bulk_indexing_clients | default(24) ) %}
-{% set p_bulk_size = ( events_per_bulk_request | default(1000) ) %}
-{% set p_iterations = ( p_event_count / p_bulk_size ) | round | int %}
-{% set p_iterations_per_client = ( p_iterations / p_bulk_indexing_clients ) | round | int %}
+{% set p_event_count = ( (event_count|int) | default(100000000) | int ) %}
+{% set p_event_mils = ( (p_event_count|int) / 1000000 ) | round | int %}
+{% set p_bulk_indexing_clients = ( (bulk_indexing_clients|int) | default(24) | int ) %}
+{% set p_bulk_size = ( (events_per_bulk_request|int) | default(1000) | int ) %}
+{% set p_iterations = ( (p_event_count|int) / (p_bulk_size|int) ) | round | int %}
+{% set p_iterations_per_client = ( (p_iterations|int) / (p_bulk_indexing_clients|int) ) | round | int %}
 
 {
   "name": "miroslav-{{p_event_mils}}m-load",
@@ -11,10 +11,10 @@
   "default": true,
   "meta": {
     "benchmark_type": "indexing",
-    "index_prefix": {{ p_index_prefix }}, 
-    "event_count": {{ p_event_count }},
-    "client_count": {{ p_bulk_indexing_clients }},
-    "docs_per_bulk": {{ p_bulk_size }}
+    "index_prefix": "{{ p_index_prefix }}", 
+    "event_count": "{{ p_event_count }}",
+    "client_count": "{{ p_bulk_indexing_clients }}",
+    "docs_per_bulk": "{{ p_bulk_size }}"
   },
   "schedule": [
     {
