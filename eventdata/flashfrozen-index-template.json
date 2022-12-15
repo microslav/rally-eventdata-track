@@ -7,14 +7,14 @@
 {
   "index_patterns": ["{{p_index_prefix}}*"],
   "settings": {
-     "index.refresh_interval": "{{p_refresh_interval}}",
+      "index.refresh_interval": "{{p_refresh_interval}}",
       "index.codec": "best_compression",
       "index.translog.durability": "async",
       "index.translog.sync_interval": "1s",
       "index.number_of_replicas": {{ number_of_replicas | default(0) }},
       "index.number_of_shards": {{ number_of_shards | default(16) }},
-      "index.lifecycle.name": "eventdata_flashfrozen",
-      "index.lifecycle.rollover_alias": "{{p_query_index_write_alias}}}"
+      "index.lifecycle.name": "flashfrozen_ilm_policy",
+      "index.lifecycle.rollover_alias": "{{p_query_index_write_alias}}"
   },
   "mappings": {
     "date_detection": false,

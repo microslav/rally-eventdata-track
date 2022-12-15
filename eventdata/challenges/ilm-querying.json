@@ -2,7 +2,7 @@
 {% set p_query_target_qps = (query_target_per_sec | default(50.0) | float) %}
 
 {
-  "name": "elasticlogs-querying",
+  "name": "ilm-querying",
   "description": "This challenge simulates a set of Kibana queries against historical data ({{p_query_index_pattern}} indices) without any indexing taking place for a period of {{ p_query_time_period / 60 }} minutes. It assumes one of the challenges creating {{p_query_index_pattern}} indices has been run.",
   "meta": {
     "benchmark_type": "querying",

@@ -1,20 +1,23 @@
 {% import "rally.helpers" as rally with context %}
 
-{% set p_bulk_indexing_clients = ( bulk_indexing_clients | default(24) | int ) %}
-{% set p_record_raw_event_size = record_raw_event_size | default(False) | tojson %}
-{% set p_index_template = index_template | default("elasticlogs-index-template.json") %}
-{% set p_index_prefix = index_prefix | default("elasticlogs") %}
-{% set p_query_index_prefix = query_index_prefix | default(p_index_prefix ~ "_q") %}
-{% set p_query_index_pattern = query_index_pattern | default(p_query_index_prefix ~ "-*") %}
+{% set p_bulk_indexing_clients = bulk_indexing_clients|default(24)|int %}
+{% set p_record_raw_event_size = record_raw_event_size|default(False)|tojson %}
+{% set p_index_template = index_template|default("elasticlogs-index-template.json") %}
+{% set p_index_prefix = index_prefix|default("elasticlogs") %}
+{% set p_query_index_prefix = query_index_prefix|default(p_index_prefix ~ "_q") %}
+{% set p_query_index_pattern = query_index_pattern|default(p_query_index_prefix ~ "-*") %}
 {% set p_query_index_write_alias = p_query_index_prefix ~ "_write" %}
-{% set p_verbose = verbose | default(False) | tojson %}
-{% set p_event_count = ( (event_count|int) | default(100000000) | int ) %}
-{% set p_event_mils = ( (p_event_count|int) / 1000000 ) | round | int %}
-{% set p_bulk_size = ( (events_per_bulk_request|int) | default(1000) | int ) %}
-{% set p_iterations = ( (p_event_count|int) / (p_bulk_size|int) ) | round | int %}
-{% set p_iterations_per_client = ( (p_iterations|int) / (p_bulk_indexing_clients|int) ) | round | int %}
-{% set p_query_time_period = (query_time_period | default(1800) | int) %}
-{% set p_query_target_qps = (query_target_per_sec | default(50.0) | float) %}
+{% set p_verbose = verbose|default(False)|tojson %}
+{% set p_event_count = (event_count|int)|default(100000000)|int %}
+{% set p_event_mils = ((p_event_count|int)/1000000)|round|int %}
+{% set p_bulk_size = ((events_per_bulk_request|int)|default(1000)|int) %}
+{% set p_iterations = ((p_event_count|int)/(p_bulk_size|int))|round|int %}
+{% set p_iterations_per_client = ((p_iterations|int)/(p_bulk_indexing_clients|int))|round|int %}
+{% set p_query_time_period = query_time_period|default(1800)|int %}
+{% set p_query_target_qps = query_target_per_sec|default(50.0)|float %}
+{% set p_disk_type = disk_type | default('ssd') | lower %}
+{% set p_translog_sync = translog_sync | default('request') | lower %}
+{% set p_refresh_interval = refresh_interval | default("10s") %}
 
 {
   "version": 2,
