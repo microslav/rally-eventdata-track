@@ -11,7 +11,7 @@
   },
   "schedule": [
     {
-      "operation": "fieldstats_elasticlogs_q-*",
+      "operation": "fieldstats_query_index",
       "iterations": 1,
       "clients": 4
     },

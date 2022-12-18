@@ -7,11 +7,12 @@ max_rolledover_indices: used by the `delete_rolledover_index_pattern` operation.
 rolledover_indices_suffix_separator: used by the `delete_rolledover_index_pattern` operation. Defaults to `-`.
 BUGBUG
 #}
+{% set p_frozen_enabled = frozen_enabled|default(true) %}
 
 {
-  "name": "create_flashfrozen_policy",
+  "name": "create_prefix_ilm_policy",
   "operation-type": "create-ilm-policy",
-  "policy-name": "flashfrozen_ilm_policy",
+  "policy-name": "{{ p_index_prefix }}_ilm_policy",
   "request-params": {
     "master_timeout": "30s",
     "timeout": "30s"
@@ -19,15 +20,6 @@ BUGBUG
   "body": {
     "policy": {
       "phases": {
-          "frozen": {
-            "min_age": "1m",
-            "actions": {
-              "searchable_snapshot": {
-                "snapshot_repository": "elastic-s3-repo",
-                "force_merge_index": true
-              } 
-            }
-          },
           "hot": {
             "min_age": "0ms",
             "actions": {
@@ -44,17 +36,21 @@ BUGBUG
               }
             }
           }
+{% if p_frozen_enabled %}
+          ,
+          "frozen": {
+            "min_age": "1m",
+            "actions": {
+              "searchable_snapshot": {
+                "snapshot_repository": "elastic-s3-repo",
+                "force_merge_index": true
+              } 
+            }
+          }
+{% endif %}
       }
     }
   }
-},
-{
-  "name": "index-append-1000-elasticlogs_q_write",
-  "operation-type": "bulk",
-  "param-source": "elasticlogs_bulk",
-  "index": "{{p_query_index_write_alias}}",
-  "bulk-size": 1000,
-  "record_raw_event_size": {{p_record_raw_event_size}}
 },
 {
   "name": "index-append-bulk-qwrite",
@@ -62,6 +58,14 @@ BUGBUG
   "param-source": "elasticlogs_bulk",
   "index": "{{p_query_index_write_alias}}",
   "bulk-size": {{p_bulk_size|int}},
+  "record_raw_event_size": {{p_record_raw_event_size}}
+},
+{
+  "name": "index-append-1000-elasticlogs_q_write",
+  "operation-type": "bulk",
+  "param-source": "elasticlogs_bulk",
+  "index": "{{p_query_index_write_alias}}",
+  "bulk-size": 1000,
   "record_raw_event_size": {{p_record_raw_event_size}}
 },
 {
@@ -166,7 +170,7 @@ BUGBUG
   "index": "elasticlogs_i-*"
 },
 {
-  "name": "deleteindex_elasticlogs_q-*",
+  "name": "deleteindex_{{ p_query_index_pattern }}",
   "operation-type": "delete-index",
   "index": "{{p_query_index_pattern}}"
 },
@@ -181,4 +185,13 @@ BUGBUG
   "index_pattern": "{{ p_query_index_pattern }}",
   "max_indices": {{ max_rolledover_indices | default(20) | int | tojson }},
   "suffix_separator": {{ rolledover_indices_suffix_separator | default("-") | tojson }}
+},
+{
+  "name": "delete_prefix_ilm_policy",
+  "operation-type": "delete-ilm-policy",
+  "policy-name": "{{ p_index_prefix }}_ilm_policy",
+  "request-params": {
+    "master_timeout": "30s",
+    "timeout": "30s"
+  }
 }

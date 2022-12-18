@@ -13,7 +13,7 @@
       "index.translog.sync_interval": "1s",
       "index.number_of_replicas": {{ number_of_replicas | default(0) }},
       "index.number_of_shards": {{ number_of_shards | default(16) }},
-      "index.lifecycle.name": "flashfrozen_ilm_policy",
+      "index.lifecycle.name": "{{ p_index_prefix }}_ilm_policy",
       "index.lifecycle.rollover_alias": "{{p_query_index_write_alias}}"
   },
   "mappings": {

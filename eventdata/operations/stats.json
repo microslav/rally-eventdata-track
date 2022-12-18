@@ -1,4 +1,9 @@
 {
+  "name": "fieldstats_query_index",
+  "operation-type": "fieldstats",
+  "index_pattern": "{{p_query_index_pattern}}"
+},
+{
   "name": "fieldstats_elasticlogs_q-*",
   "operation-type": "fieldstats",
   "index_pattern": "{{p_query_index_pattern}}"
@@ -7,6 +12,11 @@
   "name": "indicesstats_elasticlogs",
   "operation-type": "indicesstats",
   "index_pattern": "elasticlogs"
+},
+{
+  "name": "indicesstats_query_index",
+  "operation-type": "indicesstats",
+  "index_pattern": "{{p_query_index_pattern}}"
 },
 {
   "name": "indicesstats_elasticlogs_q-*",

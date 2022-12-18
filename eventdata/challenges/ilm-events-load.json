@@ -14,17 +14,21 @@
     "index_prefix": "{{ p_index_prefix }}", 
     "event_count": "{{ p_event_count }}",
     "client_count": "{{ p_bulk_indexing_clients }}",
-    "docs_per_bulk": "{{ p_bulk_size }}"
+    "docs_per_bulk": "{{ p_bulk_size }}",
+    "frozen_enabled": "{{ p_frozen_enabled }}"
   },
   "schedule": [
     {
-      "operation": "deleteindex_elasticlogs_q-*"
+      "operation": "deleteindex_{{ p_query_index_pattern }}"
     },
     {
       "operation": "delete-index-template"
     },
     {
-      "operation": "create_flashfrozen_policy"
+      "operation": "delete_prefix_ilm_policy"
+    },
+    {
+      "operation": "create_prefix_ilm_policy"
     },
     {
       "operation": "create-index-template"
@@ -32,10 +36,10 @@
     {
       "operation": {
         "operation-type": "create-index",
-        "index": "{{p_query_index_prefix}}-000001",
+        "index": "{{ p_query_index_prefix }}-000001",
         "body": {
           "aliases" : {
-            "{{p_query_index_write_alias}}" : {}
+            "{{ p_query_index_write_alias }}" : {}
           }
         }
       }
